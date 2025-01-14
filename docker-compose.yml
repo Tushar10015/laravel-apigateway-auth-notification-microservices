@@ -1,0 +1,54 @@
+version: "3.8"
+services:
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_GATEWAY_URL=http://localhost:8000
+    networks:
+      - app-network
+
+  api-gateway:
+    build:
+      context: "./api-gateway"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - auth-service
+      - notification-service
+    networks:
+      - app-network
+
+  auth-service:
+    build:
+      context: "./auth-service"
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_QUEUE=auth_events
+    depends_on:
+      - rabbitmq
+    networks:
+      - app-network
+
+  notification-service:
+    build:
+      context: "./notification-service"
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_QUEUE=auth_events
+    depends_on:
+      - rabbitmq
+    networks:
+      - app-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+networks:
+  app-network:
+    driver: bridge
