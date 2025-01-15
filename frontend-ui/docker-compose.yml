@@ -1,8 +1,8 @@
 version: "3.8"
 services:
-  frontend:
+  frontend-ui:
     build:
-      context: ./frontend
+      context: ./frontend-ui
     ports:
       - "3000:3000"
     networks:
