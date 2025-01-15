@@ -10,7 +10,10 @@ const Home = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post("/api/login", { email, password });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/login`,
+        { email, password }
+      );
       setMessage(`Login successful: ${response.data.token}`);
     } catch (error) {
       setMessage("Login failed");
